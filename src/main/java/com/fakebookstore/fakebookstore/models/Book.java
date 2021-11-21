@@ -41,7 +41,6 @@ public class Book {
         this.id = id;
     }
 
-
     public String getName() {
         return name;
     }
@@ -97,9 +96,5 @@ public class Book {
     public void setCategory(Category category) {
         this.category = category;
     }
-//
-//    public void assignBookToCategory(Category category) {
-//        this.category = category;
-//    }
 
 }
