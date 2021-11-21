@@ -12,7 +12,6 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   // @Column(name = "BOOK_ID", nullable = false, unique = true)
     private Long id;
 
     private String name;
@@ -27,7 +26,6 @@ public class Book {
     private Integer stock;
 
     @ManyToOne(fetch = FetchType.LAZY)
-   // @JoinColumn(name = "category_id") // referencedColumnName = "id"
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Category category;
 

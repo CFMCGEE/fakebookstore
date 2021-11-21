@@ -16,9 +16,8 @@ public class Category {
     @Column(name = "category_name")
     private String name;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private Collection<Book> books;
+    private List<Book> books;
 
     public Long getId() {
         return id;
@@ -36,11 +35,11 @@ public class Category {
         this.name = name;
     }
 
-    public Collection<Book> getBooks() {
+    public List<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(Collection<Book> books) {
+    public void setBooks(List<Book> books) {
         this.books = books;
     }
 

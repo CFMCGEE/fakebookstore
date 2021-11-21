@@ -16,39 +16,19 @@ public class BookController {
         @Autowired
         private BookService bookService;
 
-        @PostMapping("/")
-        public ResponseEntity<?> makeBook(@Valid @RequestBody Book book) {
+        @PostMapping
+        public ResponseEntity<Object> makeBook(@Valid @RequestBody Book book) {
                 return bookService.createBook(book);
         }
 
-        @GetMapping("/")
-        public ResponseEntity<?> retrieveAllBooks() {
+        @GetMapping
+        public ResponseEntity<Object> retrieveAllBooks() {
                 return bookService.getAllBooks();
         }
-
-        @GetMapping("/search")
-        public ResponseEntity<Object> getByBookNames(@RequestParam("name") String name) {
-                return bookService.searchByBookName(name);
-        }
-
-//        @PostMapping("/search/{name}")
-//        public ResponseEntity<Object> getByBookNames(@PathVariable String name) {
-//                return bookService.searchByBookName(name);
-//        }
-
-//        @GetMapping("/search")
-//        public String searchPage(@RequestParam("searchString") String searchString){
-//                return bookService.searchPage(searchString);
-//        }
 
         @GetMapping("/{id}")
         public ResponseEntity<Object> retrieveABook(@PathVariable Long id) {
                 return bookService.getBook(id);
-        }
-
-        @GetMapping("/{id}/category")
-        public ResponseEntity<Object> retrieveBookCategoryByBookID(@PathVariable Long id) {
-                return bookService.getBookCategoryByBookID(id);
         }
 
         @GetMapping("/category/{id}/books")
@@ -61,14 +41,9 @@ public class BookController {
                 return bookService.updateBook(id, book);
         }
 
-//        @PutMapping("/{bookId}/category/{categoryId}")
-//        public ResponseEntity<Object> assignBookToCategory(@PathVariable Long bookId, @PathVariable Long categoryId) {
-//                return bookService.placeBookInCategory(bookId, categoryId);
-//        }
-
-        @DeleteMapping("/{bookId}")
-        public ResponseEntity<Object> removeBook(@PathVariable Long bookId) {
-                return bookService.deleteBook(bookId);
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Object> removeBook(@PathVariable Long id) {
+                return bookService.deleteBook(id);
         }
 
 }

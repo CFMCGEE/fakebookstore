@@ -15,19 +15,29 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping("/")
-    public ResponseEntity<?> makeCategory(@Valid @RequestBody Category category) {
+    @PostMapping
+    public ResponseEntity<Object> makeCategory(@Valid @RequestBody Category category) {
         return categoryService.createCategory(category);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> retrieveAllCategories() {
+    @GetMapping
+    public ResponseEntity<Object> retrieveAllCategories() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> retrieveACategory(@PathVariable Long id) {
         return categoryService.getCategory(id);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Object> retrieveByBookName(@RequestParam("name") String name) {
+        return categoryService.search(name);
+    }
+
+    @GetMapping("/{id}/book")
+    public ResponseEntity<Object> findCategoryById(@PathVariable Long id) {
+        return categoryService.findCategoryById(id);
     }
 
     @PutMapping("/{id}")
@@ -39,5 +49,7 @@ public class CategoryController {
     public ResponseEntity<Object> removeCategory(@PathVariable Long id) {
         return categoryService.deleteCategory(id);
     }
+
+
 
 }

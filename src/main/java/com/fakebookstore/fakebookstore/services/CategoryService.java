@@ -3,6 +3,8 @@ package com.fakebookstore.fakebookstore.services;
 import com.fakebookstore.fakebookstore.models.Book;
 import com.fakebookstore.fakebookstore.models.Category;
 import com.fakebookstore.fakebookstore.repositories.CategoryRepository;
+import com.fakebookstore.fakebookstore.services.categorysuccessmethods.*;
+import org.hibernate.sql.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,23 +27,46 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public ResponseEntity<?> getAllCategories() {
+    public ResponseEntity<Object> getAllCategories() {
 
         List<Category> listOfCategories = categoryRepository.findAll();
 
+        ReadSuccess readSuccess = new ReadSuccess("All categories successfully found.", listOfCategories);
+
         logger.info("All categories successfully found.");
-        return new ResponseEntity<>(listOfCategories, HttpStatus.OK);
+        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
 
     }
 
     public ResponseEntity<Object> getCategory(Long id) {
+
+        SingleReadSuccess singleReadSuccess = new SingleReadSuccess("Category successfully found.",
+                categoryRepository.findById(id).orElse(null));
+
         logger.info("Category successfully found.");
-        return new ResponseEntity<>(categoryRepository.findById(id).orElse(null), HttpStatus.OK);
+        return new ResponseEntity<>(singleReadSuccess, HttpStatus.OK);
+
     }
 
-    public ResponseEntity<?> createCategory(Category category) {
+    public ResponseEntity<Object> findCategoryById(Long id) {
 
-        logger.info("Category successfully created");
+        SingleReadSuccess singleReadSuccess = new SingleReadSuccess("Book's Category Successfully Found.", categoryRepository.findByBookId(id));
+
+        logger.info("Book's Category Successfully Found.");
+        return new ResponseEntity<>(singleReadSuccess, HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<Object> search(String name) {
+
+        ReadSuccess readSuccess = new ReadSuccess("Successfully found what was searched.", categoryRepository.findByName(name));
+
+        logger.info("Successfully found what was searched.");
+        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<Object> createCategory(Category category) {
 
         Category new_category = categoryRepository.save(category);
 
@@ -53,24 +78,31 @@ public class CategoryService {
                 .toUri();
         responseHeaders.setLocation(newPollUri);
 
-        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+        CreateSuccess createSuccess = new CreateSuccess("Category successfully created", new_category);
+
+        logger.info("Category successfully created");
+        return new ResponseEntity<>(createSuccess, responseHeaders, HttpStatus.CREATED);
 
     }
 
     public ResponseEntity<Object> updateCategory(Long id, Category category) {
+
+        UpdateSuccess updateSuccess = new UpdateSuccess("Category successfully updated.", categoryRepository.save(category));
+
         logger.info("Category successfully updated.");
-        return new ResponseEntity<>(categoryRepository.save(category), HttpStatus.OK);
+        return new ResponseEntity<>(updateSuccess, HttpStatus.OK);
+
     }
 
     public ResponseEntity<Object> deleteCategory(Long id) {
 
-        logger.info("Category successfully removed.");
-
         categoryRepository.deleteById(id);
 
-        deletesuccess successful = new deletesuccess(HttpStatus.ACCEPTED.value(), "Category successfully removed.");
+        DeleteSuccess deleteSuccess = new DeleteSuccess("Category successfully removed.");
 
-        return new ResponseEntity<>(successful, HttpStatus.ACCEPTED);
+        logger.info("Category successfully removed.");
+        return new ResponseEntity<>(deleteSuccess, HttpStatus.ACCEPTED);
+
     }
 
 }

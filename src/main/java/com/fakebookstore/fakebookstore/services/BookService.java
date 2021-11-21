@@ -4,6 +4,7 @@ import com.fakebookstore.fakebookstore.models.Book;
 import com.fakebookstore.fakebookstore.models.Category;
 import com.fakebookstore.fakebookstore.repositories.BookRepository;
 import com.fakebookstore.fakebookstore.repositories.CategoryRepository;
+import com.fakebookstore.fakebookstore.services.booksuccessmethods.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -34,25 +33,41 @@ public class BookService {
         this.categoryRepository = categoryRepository;
     }
 
-    public ResponseEntity<?> getAllBooks() {
+    public ResponseEntity<Object> getAllBooks() {
 
         List<Book> listOfBooks = bookRepository.findAll();
 
+        ReadSuccess readSuccess = new ReadSuccess("All books successfully found.", listOfBooks);
+
         logger.info("All books successfully found.");
-        return new ResponseEntity<>(listOfBooks, HttpStatus.OK);
+        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
 
     }
 
     public ResponseEntity<Object> getBook(Long id) {
+
+        SingleReadSuccess singleReadSuccess = new SingleReadSuccess("Book successfully found.",
+                bookRepository.findById(id).orElse(null));
+
         logger.info("Book successfully found.");
-        return new ResponseEntity<>(bookRepository.findById(id).orElse(null), HttpStatus.OK);
+        return new ResponseEntity<>(singleReadSuccess, HttpStatus.OK);
+
     }
 
-    public ResponseEntity<?> createBook(Book book) {
+    public ResponseEntity<Object> getAllBooksByCategory(Long id) {
 
-        logger.info("Book successfully created");
+        List<Book> booksByCategory = bookRepository.findAllByCategoryId(id);
 
-        Category categories = categoryRepository.findById(book.getCategory().getId()).get(); //.orElse(null)
+        ReadSuccess readSuccess = new ReadSuccess("All books by category successfully found.", booksByCategory);
+
+        logger.info("All books by category successfully found.");
+        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<Object> createBook(Book book) {
+
+        Category categories = categoryRepository.findById(book.getCategory().getId()).get();
 
         book.setCategory(categories);
 
@@ -66,112 +81,30 @@ public class BookService {
                 .toUri();
         responseHeaders.setLocation(newPollUri);
 
-        return new ResponseEntity<>(new_book,  responseHeaders, HttpStatus.CREATED);
+        CreateSuccess createSuccess = new CreateSuccess("Book successfully created", new_book);
+
+        logger.info("Book successfully created");
+        return new ResponseEntity<>(createSuccess,  responseHeaders, HttpStatus.CREATED);
 
     }
-
-//    public ResponseEntity<Object> createBook(Book book) {
-//        logger.info("Book successfully created");
-//        return new ResponseEntity<>(bookRepository.save(book), HttpStatus.CREATED);
-//    }
 
     public ResponseEntity<Object> updateBook(Long id, Book book) {
+
+        UpdateSuccess updateSuccess = new UpdateSuccess("Book successfully updated.", bookRepository.save(book));
+
         logger.info("Book successfully updated.");
-        return new ResponseEntity<>(bookRepository.save(book), HttpStatus.OK);
+        return new ResponseEntity<>(updateSuccess, HttpStatus.OK);
+
     }
 
-    public ResponseEntity<Object> deleteBook(Long bookId) {
+    public ResponseEntity<Object> deleteBook(Long id) {
+
+        bookRepository.deleteById(id);
+
+        DeleteSuccess deleteSuccess = new DeleteSuccess("Book successfully removed.");
 
         logger.info("Book successfully removed.");
-
-        bookRepository.deleteById(bookId);
-
-        deletesuccess successful= new deletesuccess(HttpStatus.ACCEPTED.value(), "Book successfully removed.");
-
-        return new ResponseEntity<>(successful, HttpStatus.ACCEPTED);
-    }
-
-//    public ResponseEntity<Object> placeBookInCategory(Long bookId, Long categoryId) {
-//
-//        logger.info("Book successfully placed into Category");
-//
-//        Book book = bookRepository.findById(bookId).get();
-//        Category category = categoryRepository.findById(categoryId).get();
-//        book.assignBookToCategory(category);
-//
-//        return new ResponseEntity<>(bookRepository.save(book), HttpStatus.OK);
-//
-//    }
-
-//    public List<Book> searchByBookName(String name) {
-//
-//        List<Book> booksBySearch = bookRepository.search(name);
-//
-//        return booksBySearch;
-//
-//    }
-
-    public ResponseEntity<Object> searchByBookName(String name) {
-
-        try {
-//        List<Book> booksBySearch = bookRepository.search(name);
-            return new ResponseEntity<>(bookRepository.search(name), HttpStatus.OK);
-        } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        return null;
-    }
-
-//    public String searchPage(String searchString) {
-//        if(searchString != null){
-//            try {
-//                Iterable<Book> searchResult = bookRepository.search(searchString);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return new ResponseEntity<>(sear, HttpStatus.OK);
-//    }
-
-//        if (name != null) {
-//            return bookRepository.search(name);
-//        }
-//        return bookRepository.findAll();
-//    }
-//
-//    public List<Product> listAll(String keyword) {
-//        if (keyword != null) {
-//            return repo.search(keyword);
-//        }
-//        return repo.findAll();
-//    }
-
-
-    public ResponseEntity<Object> getAllBooksByCategory(Long id) {
-
-        List<Book> booksByCategory = bookRepository.findAllByCategoryId(id);
-
-        logger.info("All books by category successfully found.");
-        return new ResponseEntity<>(booksByCategory, HttpStatus.OK);
-
-    }
-
-    public ResponseEntity<Object> getBookCategoryByBookID(Long id) {
-
-        Book bookCategoryByID = bookRepository.findCategoryById(id);
-
-        Book book = new Book();
-
-//        for (int i = 0; i < books.toArray().length; i++) {
-//                if (books.contains(bookId)) {
-//                    books.get(i).getCategory();
-//                    books.get(i).getCategory();
-//                }
-//        }
-
-        logger.info("Book based on ID successfully found.");
-        return new ResponseEntity<>(bookCategoryByID, HttpStatus.OK);
+        return new ResponseEntity<>(deleteSuccess, HttpStatus.ACCEPTED);
 
     }
 
