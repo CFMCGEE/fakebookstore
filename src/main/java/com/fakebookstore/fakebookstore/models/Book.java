@@ -17,6 +17,7 @@ public class Book {
     private String name;
     private Integer sku;
     private String description;
+    private Integer price;
 
     @Lob
     @Column(nullable = false, length = 64)
@@ -63,6 +64,14 @@ public class Book {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public String getImage() {
