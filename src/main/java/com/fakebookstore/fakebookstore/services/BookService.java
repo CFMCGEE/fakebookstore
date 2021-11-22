@@ -5,6 +5,7 @@ import com.fakebookstore.fakebookstore.models.Category;
 import com.fakebookstore.fakebookstore.repositories.BookRepository;
 import com.fakebookstore.fakebookstore.repositories.CategoryRepository;
 import com.fakebookstore.fakebookstore.services.booksuccessmethods.*;
+import com.fakebookstore.fakebookstore.services.booksuccessmethods.exception.BookGetAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,35 +34,35 @@ public class BookService {
         this.categoryRepository = categoryRepository;
     }
 
-    public ResponseEntity<Object> getAllBooks() {
+    public Object getAllBooks() {
 
-        List<Book> listOfBooks = bookRepository.findAll();
+        if (bookRepository.findAll().isEmpty()) {
+            throw new BookGetAllException();
+        }
 
-        ReadSuccess readSuccess = new ReadSuccess("All books successfully found.", listOfBooks);
+        ReadSuccess readSuccess = new ReadSuccess("All books successfully found.", bookRepository.findAll());
 
         logger.info("All books successfully found.");
-        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
+        return readSuccess;
 
     }
 
-    public ResponseEntity<Object> getBook(Long id) {
+    public Object getBook(Long id) {
 
         SingleReadSuccess singleReadSuccess = new SingleReadSuccess("Book successfully found.",
                 bookRepository.findById(id).orElse(null));
 
         logger.info("Book successfully found.");
-        return new ResponseEntity<>(singleReadSuccess, HttpStatus.OK);
+        return singleReadSuccess;
 
     }
 
-    public ResponseEntity<Object> getAllBooksByCategory(Long id) {
+    public Object getAllBooksByCategory(Long id) {
 
-        List<Book> booksByCategory = bookRepository.findAllByCategoryId(id);
-
-        ReadSuccess readSuccess = new ReadSuccess("All books by category successfully found.", booksByCategory);
+        ReadSuccess readSuccess = new ReadSuccess("All books by category successfully found.", bookRepository.findAllByCategoryId(id));
 
         logger.info("All books by category successfully found.");
-        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
+        return readSuccess;
 
     }
 
@@ -84,27 +85,27 @@ public class BookService {
         CreateSuccess createSuccess = new CreateSuccess("Book successfully created", new_book);
 
         logger.info("Book successfully created");
-        return new ResponseEntity<>(createSuccess,  responseHeaders, HttpStatus.CREATED);
+        return new ResponseEntity<>(createSuccess, responseHeaders, HttpStatus.CREATED);
 
     }
 
-    public ResponseEntity<Object> updateBook(Long id, Book book) {
+    public Object updateBook(Long id, Book book) {
 
         UpdateSuccess updateSuccess = new UpdateSuccess("Book successfully updated.", bookRepository.save(book));
 
         logger.info("Book successfully updated.");
-        return new ResponseEntity<>(updateSuccess, HttpStatus.OK);
+        return updateSuccess;
 
     }
 
-    public ResponseEntity<Object> deleteBook(Long id) {
+    public Object deleteBook(Long id) {
 
         bookRepository.deleteById(id);
 
         DeleteSuccess deleteSuccess = new DeleteSuccess("Book successfully removed.");
 
         logger.info("Book successfully removed.");
-        return new ResponseEntity<>(deleteSuccess, HttpStatus.ACCEPTED);
+        return deleteSuccess;
 
     }
 

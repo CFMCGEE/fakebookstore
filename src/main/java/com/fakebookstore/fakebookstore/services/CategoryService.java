@@ -27,42 +27,40 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public ResponseEntity<Object> getAllCategories() {
+    public Object getAllCategories() {
 
-        List<Category> listOfCategories = categoryRepository.findAll();
-
-        ReadSuccess readSuccess = new ReadSuccess("All categories successfully found.", listOfCategories);
+        ReadSuccess readSuccess = new ReadSuccess("All categories successfully found.", categoryRepository.findAll());
 
         logger.info("All categories successfully found.");
-        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
+        return readSuccess;
 
     }
 
-    public ResponseEntity<Object> getCategory(Long id) {
+    public Object getCategory(Long id) {
 
         SingleReadSuccess singleReadSuccess = new SingleReadSuccess("Category successfully found.",
                 categoryRepository.findById(id).orElse(null));
 
         logger.info("Category successfully found.");
-        return new ResponseEntity<>(singleReadSuccess, HttpStatus.OK);
+        return singleReadSuccess;
 
     }
 
-    public ResponseEntity<Object> findCategoryById(Long id) {
+    public Object findCategoryById(Long id) {
 
         SingleReadSuccess singleReadSuccess = new SingleReadSuccess("Book's Category Successfully Found.", categoryRepository.findByBookId(id));
 
         logger.info("Book's Category Successfully Found.");
-        return new ResponseEntity<>(singleReadSuccess, HttpStatus.OK);
+        return singleReadSuccess;
 
     }
 
-    public ResponseEntity<Object> search(String name) {
+    public Object search(String name) {
 
         ReadSuccess readSuccess = new ReadSuccess("Successfully found what was searched.", categoryRepository.findByName(name));
 
         logger.info("Successfully found what was searched.");
-        return new ResponseEntity<>(readSuccess, HttpStatus.OK);
+        return readSuccess;
 
     }
 
@@ -85,23 +83,23 @@ public class CategoryService {
 
     }
 
-    public ResponseEntity<Object> updateCategory(Long id, Category category) {
+    public Object updateCategory(Long id, Category category) {
 
         UpdateSuccess updateSuccess = new UpdateSuccess("Category successfully updated.", categoryRepository.save(category));
 
         logger.info("Category successfully updated.");
-        return new ResponseEntity<>(updateSuccess, HttpStatus.OK);
+        return updateSuccess;
 
     }
 
-    public ResponseEntity<Object> deleteCategory(Long id) {
+    public Object deleteCategory(Long id) {
 
         categoryRepository.deleteById(id);
 
         DeleteSuccess deleteSuccess = new DeleteSuccess("Category successfully removed.");
 
         logger.info("Category successfully removed.");
-        return new ResponseEntity<>(deleteSuccess, HttpStatus.ACCEPTED);
+        return deleteSuccess;
 
     }
 
