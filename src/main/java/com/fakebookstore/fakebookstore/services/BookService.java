@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+//Business Logic ONLY
 @Service
 public class BookService {
 
@@ -66,7 +67,7 @@ public class BookService {
 
     }
 
-    public ResponseEntity<Object> createBook(Book book) {
+    public Object createBook(Book book) {
 
         Category categories = categoryRepository.findById(book.getCategory().getId()).get();
 
@@ -74,18 +75,10 @@ public class BookService {
 
         Book new_book = bookRepository.save(book);
 
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newPollUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(new_book.getId())
-                .toUri();
-        responseHeaders.setLocation(newPollUri);
-
         CreateSuccess createSuccess = new CreateSuccess("Book successfully created", new_book);
 
         logger.info("Book successfully created");
-        return new ResponseEntity<>(createSuccess, responseHeaders, HttpStatus.CREATED);
+        return createSuccess;
 
     }
 

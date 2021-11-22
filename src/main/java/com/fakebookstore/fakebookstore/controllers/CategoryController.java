@@ -5,8 +5,10 @@ import com.fakebookstore.fakebookstore.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/bookstore/category")
@@ -17,7 +19,15 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<Object> makeCategory(@Valid @RequestBody Category category) {
-        return categoryService.createCategory(category);
+
+        URI categoryLocation = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(category.getId())
+                .toUri();
+
+        return ResponseEntity.created(categoryLocation).body(categoryService.createCategory(category));
+
     }
 
     @GetMapping

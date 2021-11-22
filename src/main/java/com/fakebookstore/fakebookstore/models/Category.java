@@ -1,7 +1,5 @@
 package com.fakebookstore.fakebookstore.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.*;
 
@@ -16,8 +14,14 @@ public class Category {
     @Column(name = "category_name")
     private String name;
 
+    //mappedBy attribute: Makes the association bidirectional through mapping to the owning side
+    //OneToMany for this specific project: There can be one category which can belong to many books
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Book> books;
+
+    public Category() {
+
+    }
 
     public Long getId() {
         return id;

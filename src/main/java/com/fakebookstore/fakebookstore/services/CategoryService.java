@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+//Business Logic ONLY
 @Service
 public class CategoryService {
 
@@ -64,22 +65,14 @@ public class CategoryService {
 
     }
 
-    public ResponseEntity<Object> createCategory(Category category) {
+    public Object createCategory(Category category) {
 
         Category new_category = categoryRepository.save(category);
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newPollUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(new_category.getId())
-                .toUri();
-        responseHeaders.setLocation(newPollUri);
 
         CreateSuccess createSuccess = new CreateSuccess("Category successfully created", new_category);
 
         logger.info("Category successfully created");
-        return new ResponseEntity<>(createSuccess, responseHeaders, HttpStatus.CREATED);
+        return createSuccess;
 
     }
 

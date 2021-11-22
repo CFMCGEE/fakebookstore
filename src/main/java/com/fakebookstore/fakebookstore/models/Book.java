@@ -26,8 +26,12 @@ public class Book {
     private Status status;
     private Integer stock;
 
+    //ManyToOne for this specific project: There can be many categories which can hold many books.
     @ManyToOne(fetch = FetchType.LAZY)
+    //Essentially, this can be used for deserialization
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //JoinColumn specifies the mapping of the owning side
+    @JoinColumn(name = "cg_id")
     private Category category;
 
     public Book() {
