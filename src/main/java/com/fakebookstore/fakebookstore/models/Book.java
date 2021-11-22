@@ -17,7 +17,7 @@ public class Book {
     private String name;
     private Integer sku;
     private String description;
-    private Integer price;
+    private Double price;
 
     @Lob
     @Column(nullable = false, length = 64)
