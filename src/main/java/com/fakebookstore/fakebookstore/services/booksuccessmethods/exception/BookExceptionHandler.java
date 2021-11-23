@@ -10,8 +10,8 @@ public class BookExceptionHandler extends BookGetAllException {
 
     @ExceptionHandler(BookGetAllException.class)
     public ResponseEntity<?> handleBookException() {
-        NotFoundError accountError = new NotFoundError("No books found.");
-        return new ResponseEntity<>(accountError, null, HttpStatus.NOT_FOUND);
+        NotFoundError error = new NotFoundError("No books found.");
+        return new ResponseEntity<>(error, null, HttpStatus.NOT_FOUND);
     }
 
 }
